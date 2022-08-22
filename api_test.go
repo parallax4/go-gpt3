@@ -3,7 +3,6 @@ package gogpt_test
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/goccy/go-json"
 
 	. "github.com/sashabaranov/go-gpt3"
 )
@@ -129,6 +130,7 @@ func TestEdits(t *testing.T) {
 		t.Fatalf("edits does not properly return the correct number of choices")
 	}
 }
+
 func TestEmbedding(t *testing.T) {
 	embeddedModels := []EmbeddingModel{
 		AdaSimilarity,

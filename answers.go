@@ -3,8 +3,9 @@ package gogpt
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
+
+	"github.com/goccy/go-json"
 )
 
 type AnswerRequest struct {

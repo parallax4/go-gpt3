@@ -3,8 +3,9 @@ package gogpt
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
+
+	"github.com/goccy/go-json"
 )
 
 // EmbeddingModel enumerates the models which can be used

@@ -3,8 +3,9 @@ package gogpt
 import (
 	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
+
+	"github.com/goccy/go-json"
 )
 
 // GPT3 Defines the models provided by OpenAI to use when generating
@@ -102,5 +103,30 @@ func (c *Client) CreateCompletion(
 
 	req = req.WithContext(ctx)
 	err = c.sendRequest(req, &response)
+	return
+}
+
+// CreateCompletionStream — API call to create a streaming completion.
+func (c *Client) CreateCompletionStream(
+	ctx context.Context,
+	request CompletionRequest,
+	onData func(CompletionResponse),
+) (response CompletionResponse, err error) {
+	request.Stream = true
+
+	var reqBytes []byte
+	reqBytes, err = json.Marshal(request)
+	if err != nil {
+		return
+	}
+
+	urlSuffix := "/completions"
+	req, err := http.NewRequest("POST", c.fullURL(urlSuffix), bytes.NewBuffer(reqBytes))
+	if err != nil {
+		return
+	}
+
+	req = req.WithContext(ctx)
+	response, err = c.sendStreamRequest(req, onData)
 	return
 }
