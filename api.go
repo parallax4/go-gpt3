@@ -127,7 +127,10 @@ func (c *Client) sendStreamRequest(req *http.Request, onData func(CompletionResp
 
 	reader := bufio.NewReader(res.Body)
 	output = CompletionResponse{}
+
+	var prevText string
 	var line []byte
+
 	for {
 		line, err = reader.ReadBytes('\n')
 		if err != nil {
@@ -139,16 +142,26 @@ func (c *Client) sendStreamRequest(req *http.Request, onData func(CompletionResp
 		if !bytes.HasPrefix(line, dataPrefix) {
 			continue
 		}
-		line = bytes.TrimPrefix(line, dataPrefix)
+		line = bytes.TrimSpace(bytes.TrimPrefix(line, dataPrefix))
 
 		// the stream is completed when terminated by [DONE]
 		if bytes.HasPrefix(line, doneSequence) {
 			break
 		}
+
+		if len(output.Choices) > 0 {
+			prevText = output.Choices[0].Text
+		}
+
 		if err = json.Unmarshal(line, &output); err != nil {
 			err = fmt.Errorf("invalid json stream data: %v", err)
 			return
 		}
+
+		if len(output.Choices) > 0 {
+			output.Choices[0].Text = prevText + output.Choices[0].Text
+		}
+
 		onData(output)
 	}
 
