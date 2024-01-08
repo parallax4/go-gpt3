@@ -36,6 +36,15 @@ func NewClient(authToken string) *Client {
 	}
 }
 
+func NewClientWithHTTPClient(authToken string, httpClient *http.Client) *Client {
+	return &Client{
+		BaseURL:    apiURLv1,
+		HTTPClient: httpClient,
+		authToken:  authToken,
+		idOrg:      "",
+	}
+}
+
 // NewOrgClient creates new OpenAI API client for specified Organization ID.
 func NewOrgClient(authToken, org string) *Client {
 	return &Client{
