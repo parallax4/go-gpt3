@@ -16,7 +16,7 @@ import (
 
 	"github.com/goccy/go-json"
 
-	. "github.com/sashabaranov/go-gpt3"
+	. "github.com/parallax4/go-gpt3"
 )
 
 const (
